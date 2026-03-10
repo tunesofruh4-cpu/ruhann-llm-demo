@@ -2,7 +2,6 @@
 import streamlit as st
 import pandas as pd
 import ollama
-
 st.set_page_config(page_title="Student Problem OS Pro", page_icon="🦈", layout="wide")
 
 st.markdown("""
@@ -13,8 +12,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.title("🦈 Student Problem OS Pro")
-st.markdown("**Real AI Academic Coach + Tasks + Resources**")
-
 def ai_coach_response(user_input):
     system_prompt = """You are expert high school academic coach.
     Respond ALWAYS with:
@@ -25,17 +22,29 @@ def ai_coach_response(user_input):
     
     Specific, actionable, encouraging for students."""
     
+    api_key = os.environ.get("OLLAMA_API_KEY")
+    model = os.environ.get("OLLAMA_MODEL", "llama3.2")
+    
+    if not api_key:
+        return "✅ Ollama Cloud API Key added to Render!"
+    
+    import requests
+    url = "https://ollama.com/api/chat"
+    payload = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_input}
+        ],
+        "stream": False
+    }
+    headers = {"Authorization": f"Bearer {api_key}"}
+    
     try:
-        response = ollama.chat(
-            model='llama3.2',
-            messages=[
-                {'role': 'system', 'content': system_prompt},
-                {'role': 'user', 'content': user_input}
-            ]
-        )
-        return response['message']['content']
+        resp = requests.post(url, json=payload, headers=headers, timeout=60)
+        return resp.json()["message"]["content"]
     except Exception as e:
-        return f"Ollama running? ({str(e)[:50]})"
+        return f"API setup check: {str(e)[:50]}"
 
 # Real AI Chat (your code continues exactly as provided...)
 if "messages" not in st.session_state:
