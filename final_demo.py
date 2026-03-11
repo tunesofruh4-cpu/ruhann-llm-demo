@@ -107,16 +107,16 @@ with col2:
     if st.button("Task 1 ✓", use_container_width=True):
         if current < 3:
             st.session_state.tasks[days.index(day_idx)] += 1
-            st.experimental_rerun()
+            st.rerun()
     if st.button("Task 2 ✓", use_container_width=True):
         if current < 3:
             st.session_state.tasks[days.index(day_idx)] += 1
-            st.experimental_rerun()
+            st.rerun()
     if st.button("Task 3 ✓", use_container_width=True):
         if current < 3:
             st.session_state.tasks[days.index(day_idx)] += 1
             st.balloons()
-            st.experimental_rerun()
+            st.rerun()
 
 st.divider()
 
@@ -133,7 +133,7 @@ col2.metric("Success Rate", f"{sum(1 for x in st.session_state.tasks if x==3)/5*
 
 if st.button("🔄 Reset Week"):
     st.session_state.tasks = [0]*5
-    st.experimental_rerun()
+    st.rerun()
 
 st.markdown("---")
 st.caption("Cloud LLM via Ollama API")
